@@ -1,43 +1,6 @@
 import tkinter
 from tkinter import *
 import akinator_7_genius
-from PIL import Image, ImageDraw, ImageTk
-
-
-
-# Пустой желтый фон.
-# image = Image.new('RGB', (500, 300), (219, 193, 27))
-# draw = ImageDraw.Draw(image)
-# image.save('draw-smile.jpg')
-
-
-
-
-# def img():
-#     img = ImageTk.(file="draw-smile.jpg")
-#     label = Label(window, image=img)
-#     label.image_ref = img
-#     label.pack()
-#
-# img()
-
-
-
-
-# e1.grid(row=0, column=1)
-# e2.grid(row=1, column=1)
-
-
-# # canvas.grid(row=2, column=3)
-#
-# msg = Message(window, text = "whatever_you_do")
-# msg.config(bg='lightgreen', font=('times', 24, 'italic'))
-# # msg.grid(row=2, column=3)
-# msg.bind('<Return>', print(1))
-#
-#
-# msg.pack()
-
 
 
 def TkinterApp():
@@ -68,9 +31,6 @@ def TkinterApp():
     canvas.pack()
     color_indicator = canvas.create_rectangle(15, 15, 355, 215, fill="blue")
 
-    # canvas = Canvas(window, width=200, height=200, bg='#000000')
-    # canvas.pack()
-
     window.bind('<KeyRelease-Return>', eventHandler)
 
 
@@ -78,8 +38,6 @@ if __name__ == "__main__":
     window = Tk()
     window.geometry('400x700')
     window.title("Акинатор")
-
-
 
     global index
     index = 0

@@ -6,18 +6,18 @@
 # TODO need a error message with yes no and amazing rainbow in lamp
 
 
+import random
 import tkinter
 from tkinter import *
-import akinator_7_genius
 
 import aggdraw
-from PIL import Image, ImageSequence, ImageTk
-import random
 import imageio
+from PIL import Image
+
+import akinator_7_genius
 
 
 def TkinterApp():
-
     def generationGif(color):
         gif_frames = []
 
@@ -30,67 +30,77 @@ def TkinterApp():
             draw.flush()
             return image
 
-        for i in range(4):
-            image = generationImg((color[0] + random.randint(0, 30),
-                                   color[1] - random.randint(0, 30),
-                                   color[2] - random.randint(0, 30)))
+        for _ in range(4):
+            for solo_frame in range(30):
+                gradient_start = 1.05
+                gradient_end = 1.20
 
-            gif_frames.append(image)
+                multi_frame = generationImg((
+                    round(color[0] * random.uniform(gradient_start, gradient_end)),
+                    round(color[1] * random.uniform(gradient_start, gradient_end)),
+                    round(color[2] * random.uniform(gradient_start, gradient_end))
+                ))
 
-        imageio.mimwrite("result.gif", gif_frames, 'GIF', fps=5)
+                gif_frames.append(multi_frame)
+
+            imageio.mimwrite("result.gif", gif_frames, 'GIF', fps=5)
+
 
     def eventHandler(event):
 
+        print("Нажатие на кнопку")
+
         global index
         index += 1
-
         question_string.set(akinator_7_genius.questions[index][0])
-        input_form.delete(0, END)
+
+        generationGif((50, 100, 50))
+        global frames
+        frames = [PhotoImage(file='result.gif', format='gif -index %i' % (i)) for i in range(frameCount)]
+        window.after(0, update, 0)
 
     question_string = StringVar()
-    input_string = StringVar()
 
     question_form = tkinter.Label(textvariable=question_string, height=5, font=50)
     question_string.set("Сыграем?")
     question_form.pack(fill='x', padx=(10, 10))
 
-    input_form = tkinter.Entry(window, textvariable=input_string, font=50)
-    input_form.pack(fill='x', padx=(50, 50), pady=(10, 50))
+    button_frame = tkinter.Frame(window)
+    yes_btn = tkinter.Button(master=button_frame, text="ДА", width=5, height=3, padx=10, pady=10, bg="green")
+    yes_btn.grid(row=0, column=0)
+    no_btn = tkinter.Button(master=button_frame, text="НЕТ", width=5, height=3, padx=10, pady=10, bg="red")
+    no_btn.grid(row=0, column=1)
+    button_frame.pack(side=TOP)
 
-    game_description = tkinter.Label(text="Самый вероятный цвет", height=5, font=50)
+    game_description = tkinter.Label(text="Самый вероятный цвет", height=5, font=50, bg="white")
     game_description.pack()
 
-    # canvas = Canvas(window, width=320, height=320)
-    # canvas.pack()
-    generationGif((0, 0, 0))
+    generationGif((50, 100, 50))
+    frameCount = 30
 
-    # magic_lamp = tkinter.PhotoImage(file="result.gif", format="gif -index 2")
-    # canvas.create_image(0, 0, anchor='nw', image=magic_lamp)
+    global frames
+    frames = [PhotoImage(file='result.gif', format='gif -index %i' % (i)) for i in range(frameCount)]
 
-    # def gif_animation():
-    #     pass
+    def update(ind):
+        frame = frames[ind]
+        ind += 1
+        if ind == frameCount:
+            ind = 0
+        label.configure(image=frame)
+        window.after(100, update, ind)
 
-    def animation():
-        global magic_lamp
-        magic_lamp = Image.open('result.gif')
-        gif_label = Label(window)
-        gif_label.pack()
+    label = Label(window)
+    label.pack()
+    window.after(0, update, 0)
 
-        for img in ImageSequence.Iterator(magic_lamp):
-            img = ImageTk.PhotoImage(img)
-            gif_label.config(image=img)
-            window.update()
-        window.after(0, animation())
-
-    animation()
-
-    window.bind('<KeyRelease-Return>', eventHandler)
-
+    yes_btn.bind('<Button-1>', eventHandler)
+    no_btn.bind('<Button-1>', eventHandler)
 
 
 if __name__ == "__main__":
     window = Tk()
     window.geometry('400x700')
+    window['bg'] = "white"
     window.title("Акинатор")
 
     global index
@@ -98,6 +108,3 @@ if __name__ == "__main__":
 
     TkinterApp()
     window.mainloop()
-
-
-
